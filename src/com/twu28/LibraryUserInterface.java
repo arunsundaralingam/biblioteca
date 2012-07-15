@@ -14,23 +14,7 @@ public class LibraryUserInterface {
     public void interactWithUser(){
         com.twu28.Library library  = new Library();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String userId = "";
-        while (true){
-            System.out.println("[Hint]:An Example User ID : u0001");
-            System.out.print("\nPlease Enter Your UserID <OR> Type exit to EXIT  :  ");
-            try {
-                userId = br.readLine();
-            } catch (IOException e) {
-                System.err.println("Some Error has been occurred while getting input from you.");
-                continue;
-            }
-            if(userId.equalsIgnoreCase("EXIT")){
-                System.out.println("Thank you Visit Again !");
-                System.exit(0);
-            }
-            else if(library.doesUserIdExist(userId)){
                 while (true){
-                    System.out.println("Hi "+library.getUserName(userId));
                     System.out.println("Please select any one of these options\n");
                     System.out.println("[1] Books reserved by you");
                     System.out.println("[2] Reserve a book");
@@ -46,13 +30,14 @@ public class LibraryUserInterface {
                     }
                     switch (selectionFromTheUser){
                         case 1:
-                            library.displayBooksReservedByTheUser(userId);
+                            library.displayBooksReservedByTheUser();
+                            System.out.println("Please talk to Librarian. Thank you");
                             break;
                         case 2:
-                            library.reserveBook(userId);
+                            library.reserveBook();
                             break;
                         case 3:
-                            library.returnBook(userId);
+                            library.returnBook();
                             break;
                         case 4:
                             library.searchForBook();
@@ -68,11 +53,8 @@ public class LibraryUserInterface {
                             break;
                     }
                 }
-            }
-            else {
-                System.err.println("User Id Invalid");
-            }
+
 
         }
-    }
+
 }

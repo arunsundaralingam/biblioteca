@@ -4,20 +4,9 @@ import java.util.*;
 
 public class StaticDataGenerator {
     List bookList;
-    Map userList;
     public StaticDataGenerator(){
         bookList = new ArrayList();
-        userList = new HashMap();
         generateBooks();
-        generateUsers();
-    }
-
-    private void generateUsers() {
-        userList.put("u0001",new User("u0001","Arun"));
-        userList.put("u0002", new User("u0002", "Silvio"));
-        userList.put("u0003", new User("u0003", "Joseph"));
-        userList.put("u0004", new User("u0004", "Martin"));
-        userList.put("u0005", new User("u0005", "Thomas"));
     }
 
     private void generateBooks() {
@@ -34,9 +23,5 @@ public class StaticDataGenerator {
     }
     public List getBookList() {
         return bookList;
-    }
-
-    public Map getUserList() {
-        return userList;
     }
 }

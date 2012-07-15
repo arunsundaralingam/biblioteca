@@ -3,6 +3,7 @@ package com.twu28;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,41 +15,29 @@ import java.util.Map;
  * Time: 12:57 PM
  */
 public class Library {
-    Map userList;
     List bookList;
-    Map reservedBooks;
+    List reservedBooks;
     BufferedReader br;
     Library(){
         StaticDataGenerator generator = new StaticDataGenerator();
-        userList = generator.getUserList();
         bookList = generator.getBookList();
-        reservedBooks = new HashMap();
+        reservedBooks = new ArrayList();
         br = new BufferedReader(new InputStreamReader(System.in));
     }
-    public boolean doesUserIdExist(String userId) {
-        for(Object user:userList.keySet()){
-            if(((String)user).equals(userId))return true;
-        }
-        return  false;
-    }
-
-    public String getUserName(String userId) {
-        return ((User)userList.get(userId)).getNameOfTheUser();
-    }
-
-    public void displayBooksReservedByTheUser(String userId) {
+    public void displayBooksReservedByTheUser() {
         System.out.println("Title\t\tAuthor\tPublication\t\tYearOfPublication\tISBN\tPrice\tCategory");
         int i = 0;
-        if(reservedBooks.get(userId) == null) System.out.println("You Didn't register any book");
+        if(reservedBooks.isEmpty())
+        System.out.println("You Didn't register any book");
         else
-        for(Object reservedBooksByTheUser:(List)reservedBooks.get(userId)){
+        for(Object reservedBooksByTheUser:reservedBooks){
             Book book = (Book)reservedBooksByTheUser;
             System.out.println("["+(i+1)+"] "+book.title+"\t"+book.author+"\t"+book.publication+"\t"+book.yearOfPublication+"\t"+book.ISBN+"\t"+book.price);
             i++;
         }
     }
 
-    public void reserveBook(String userId) {
+    public void reserveBook() {
         browseAllBooks();
         System.out.println("Enter [1-10] to reserve the corresponding book");
         int indexOfTheBook = 0;
@@ -58,39 +47,28 @@ public class Library {
             System.err.println("Some Error has been occurred while entering input.");
         }
         if(indexOfTheBook < 11 && indexOfTheBook > 0){
-            if(isBookAvailable(indexOfTheBook)){
-                reservedBooks.put(userList.get(userId),bookList.get(indexOfTheBook));
+            if(reservedBooks.contains(bookList.get(indexOfTheBook))){
+                System.out.println("You have already reserved the book");
             }
-            else System.err.println("The book you have entered is not available\n Please talk to the Librarian");
-        }
-        else System.err.println("You have entered an index out of bounds");
-    }
-
-    private boolean isBookAvailable(int indexOfTheBook) {
-        for(Object users:reservedBooks.keySet()){
-            if(((List)reservedBooks.get(users)).contains(bookList.get(indexOfTheBook-1))){
-                return false;
+            else{
+                reservedBooks.add(bookList.get(indexOfTheBook));
+                System.out.println("Thank You! Enjoy the book");
             }
         }
-        return true;  //To change body of created methods use File | Settings | File Templates.
     }
 
-    public void returnBook(String userId) {
-        displayBooksReservedByTheUser(userId);
-        if(reservedBooks.get(userId) == null) System.err.println("You have no books to return");
+    public void returnBook() {
+        displayBooksReservedByTheUser();
+        if(reservedBooks.isEmpty()) System.err.println("You have no books to return");
         else {
-            System.out.println("Enter index of the book you want to return : ");
+            System.out.println("Enter index of the book you want to return : [starts from 1]");
             int selectedIndexOfTheReservedBooksByTheUser = 0;
             try {
                 selectedIndexOfTheReservedBooksByTheUser = Integer.parseInt(br.readLine());
             } catch (IOException e) {
                 System.err.println("Some error has been occurred while entering input");
             }
-            List listOfBooksReservedByTheUser = (List)reservedBooks.get(userId);
-            if(listOfBooksReservedByTheUser.isEmpty()) System.err.println("There are no books to return");
-            else if(listOfBooksReservedByTheUser.get(selectedIndexOfTheReservedBooksByTheUser) == null)
-                System.err.println("Please Enter valid index");
-            else listOfBooksReservedByTheUser.remove(selectedIndexOfTheReservedBooksByTheUser);
+            reservedBooks.remove(selectedIndexOfTheReservedBooksByTheUser - 1);
         }
 
     }
