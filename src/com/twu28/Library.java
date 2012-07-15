@@ -36,7 +36,12 @@ public class Library {
             i++;
         }
     }
-
+    public boolean isInsideTheBounds(int indexOfTheBook){
+        return indexOfTheBook < 11 && indexOfTheBook > 0 ;
+    }
+    public boolean isThePersonAlreadyReservedTheBook(int indexOfTheBook){
+        return reservedBooks.contains(bookList.get(indexOfTheBook));
+    }
     public void reserveBook() {
         browseAllBooks();
         System.out.println("Enter [1-10] to reserve the corresponding book");
@@ -46,14 +51,17 @@ public class Library {
         } catch (IOException e) {
             System.err.println("Some Error has been occurred while entering input.");
         }
-        if(indexOfTheBook < 11 && indexOfTheBook > 0){
-            if(reservedBooks.contains(bookList.get(indexOfTheBook))){
+        if(isInsideTheBounds(indexOfTheBook)){
+            if(isThePersonAlreadyReservedTheBook(indexOfTheBook)){
                 System.out.println("You have already reserved the book");
             }
             else{
                 reservedBooks.add(bookList.get(indexOfTheBook));
                 System.out.println("Thank You! Enjoy the book");
             }
+        }
+        else{
+            System.out.println("Select a valid index from [1-10]");
         }
     }
 
@@ -84,12 +92,16 @@ public class Library {
         boolean bookNotFound = false;
         for(Object bookObject:bookList){
             Book book = (Book)bookObject;
-            if(((Book)book).getNameOfBook().toUpperCase().contains(searchString.toUpperCase())){
+            if(doesSearchStringMatchWithTitle(book , searchString)){
                 System.out.println(book.title+"\t"+book.author+"\t"+book.publication+"\t"+book.yearOfPublication+"\t"+book.ISBN+"\t"+book.price);
                 bookNotFound = true;
             }
         }
         if(!bookNotFound) System.err.println("Sorry we don't have that book yet");
+    }
+
+    public boolean doesSearchStringMatchWithTitle(Book book, String searchString) {
+        return ((Book)book).getNameOfBook().toUpperCase().contains(searchString.toUpperCase());
     }
 
     public void browseAllBooks() {
