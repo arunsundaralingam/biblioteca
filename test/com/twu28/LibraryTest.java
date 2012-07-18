@@ -5,10 +5,12 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LibraryTest extends junit.framework.TestCase {
+import static org.junit.Assert.assertTrue;
+
+public class LibraryTest {
     Library library;
     List bookList;
-    LibraryTest(){
+    public LibraryTest(){
         library =  new Library();
         //bookList = new ArrayList();
         StaticDataGenerator generator = new StaticDataGenerator();
