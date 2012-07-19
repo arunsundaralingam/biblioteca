@@ -8,107 +8,103 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: M. Arun Sundaralingam
- * Date: 7/15/12
- * Time: 12:57 PM
- */
 public class Library {
     List bookList;
+    List movieList;
     List reservedBooks;
+    List userList;
     BufferedReader br;
+    User currentUser;
+    public int startIndexOfBooks;
+    public int lastIndexOfBooks;
+    private int startIndexOfMovies;
+    private int lastIndexOfMovies;
+    private boolean hasTheUserLoggedIn;
+
     Library(){
         StaticDataGenerator generator = new StaticDataGenerator();
         bookList = generator.getBookList();
+        movieList = generator.getMovieList();
+        userList = generator.getUserList();
+        startIndexOfBooks = 1;
+        lastIndexOfBooks = bookList.size();
+        startIndexOfMovies = 1;
+        lastIndexOfMovies =movieList.size();
+        hasTheUserLoggedIn = false;
         reservedBooks = new ArrayList();
         br = new BufferedReader(new InputStreamReader(System.in));
     }
-    public void displayBooksReservedByTheUser() {
-        System.out.println("Title\t\tAuthor\tPublication\t\tYearOfPublication\tISBN\tPrice\tCategory");
-        int i = 0;
-        if(reservedBooks.isEmpty())
-        System.out.println("You Didn't register any book");
-        else
-        for(Object reservedBooksByTheUser:reservedBooks){
-            Book book = (Book)reservedBooksByTheUser;
-            System.out.println("["+(i+1)+"] "+book.title+"\t"+book.author+"\t"+book.publication+"\t"+book.yearOfPublication+"\t"+book.ISBN+"\t"+book.price);
-            i++;
-        }
+
+    public int getStartIndexOfBooks() {
+        return startIndexOfBooks;
     }
-    public boolean isInsideTheBounds(int indexOfTheBook){
-        return indexOfTheBook < 11 && indexOfTheBook > 0 ;
+
+    public int getLastIndexOfBooks() {
+        return lastIndexOfBooks;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public List getBookList() {
+        return bookList;
+    }
+    public List getMovieList(){
+        return movieList;
+    }
+    public List getReservedBooks() {
+        return reservedBooks;
+    }
+
+    public boolean isBookInsideTheBounds(int indexOfTheBook){
+        return indexOfTheBook <= lastIndexOfBooks && indexOfTheBook > startIndexOfBooks;
+    }
+    public boolean isMovieInsideTheBounds(int indexOfTheMovie){
+        return indexOfTheMovie <= lastIndexOfMovies && indexOfTheMovie > startIndexOfMovies;
     }
     public boolean isThePersonAlreadyReservedTheBook(int indexOfTheBook){
         return reservedBooks.contains(bookList.get(indexOfTheBook));
     }
-    public void reserveBook() {
-        browseAllBooks();
-        System.out.println("Enter [1-10] to reserve the corresponding book");
-        int indexOfTheBook = 0;
-        try {
-            indexOfTheBook = Integer.parseInt(br.readLine());
-        } catch (IOException e) {
-            System.err.println("Some Error has been occurred while entering input.");
-        }
-        if(isInsideTheBounds(indexOfTheBook)){
-            if(isThePersonAlreadyReservedTheBook(indexOfTheBook)){
-                System.out.println("You have already reserved the book");
-            }
-            else{
-                reservedBooks.add(bookList.get(indexOfTheBook));
-                System.out.println("Thank You! Enjoy the book");
-            }
-        }
-        else{
-            System.out.println("Select a valid index from [1-10]");
-        }
+
+    public int getStartIndexOfMovies() {
+        return startIndexOfMovies;
     }
 
-    public void returnBook() {
-        displayBooksReservedByTheUser();
-        if(reservedBooks.isEmpty()) System.err.println("You have no books to return");
-        else {
-            System.out.println("Enter index of the book you want to return : [starts from 1]");
-            int selectedIndexOfTheReservedBooksByTheUser = 0;
-            try {
-                selectedIndexOfTheReservedBooksByTheUser = Integer.parseInt(br.readLine());
-            } catch (IOException e) {
-                System.err.println("Some error has been occurred while entering input");
-            }
-            reservedBooks.remove(selectedIndexOfTheReservedBooksByTheUser - 1);
-        }
-
+    public int getLastIndexOfMovies() {
+        return lastIndexOfMovies;
     }
 
-    public void searchForBook() {
-        String searchString = "";
-        System.out.println("Enter part of the title of the book you are looking for  :  ");
-        try {
-            searchString = br.readLine();
-        } catch (IOException e) {
-            System.out.println("Some error has been occurred while entering input");
-        }
-        boolean bookNotFound = false;
-        for(Object bookObject:bookList){
-            Book book = (Book)bookObject;
-            if(doesSearchStringMatchWithTitle(book , searchString)){
-                System.out.println(book.title+"\t"+book.author+"\t"+book.publication+"\t"+book.yearOfPublication+"\t"+book.ISBN+"\t"+book.price);
-                bookNotFound = true;
-            }
-        }
-        if(!bookNotFound) System.err.println("Sorry we don't have that book yet");
+    public void addThisBookToHisCollection(int indexOfTheBook) {
+        getReservedBooks().add(getBookList().get(indexOfTheBook));
     }
 
-    public boolean doesSearchStringMatchWithTitle(Book book, String searchString) {
-        return ((Book)book).getNameOfBook().toUpperCase().contains(searchString.toUpperCase());
+    public Movie getMovieFromIndex(int indexOfTheMovie) {
+        return (Movie)(movieList.get(indexOfTheMovie));
     }
-
-    public void browseAllBooks() {
-        System.out.println("Title\t\tAuthor\tPublication\t\tYearOfPublication\tISBN\tPrice\tCategory");
-        for(int i = 0; i < bookList.size(); i++){
-            Book book = (Book)bookList.get(i);
-            System.out.println("["+(i+1)+"] "+book.title+"\t"+book.author+"\t"+book.publication+"\t"+book.yearOfPublication+"\t"+book.ISBN+"\t"+book.price);
+    public int getUserIndexFromID(String userID){
+        for (int i=0;i<userList.size();i++){
+            if(((User)(userList.get(i))).getUserID().equals(userID)) return i;
         }
+        return -1;
+    }
+    public boolean isValidPasswordForTheUser(int userIndex,String password){
+        return (((User)(userList.get(userIndex))).getPassword().equals(password));
+    }
+    public void performLogin(String userID , String password){
+        currentUser = getUserFromUserID(userID);
+        if(currentUser != null)
+        hasTheUserLoggedIn = true;
+    }
+    public User getUserFromUserID(String userID){
+        User aUser = null;
+        for(Object anObject:userList) {
+            aUser = (User)anObject;
+            if(aUser.getUserID().equals(userID)) return aUser;
+        }
+        return aUser;
+    }
+    public boolean isUserHasLoggedIn(){
+        return hasTheUserLoggedIn;
     }
 }

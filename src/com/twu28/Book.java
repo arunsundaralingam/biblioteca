@@ -19,7 +19,7 @@ public class Book {
         this.price = price;
     }
 
-    public  String getNameOfBook(){
-        return title;
+    public String toString(){
+        return serialNumber+"\t"+title+"\t"+author+"\t"+publication+"\t"+ISBN+"\t"+price;
     }
 }

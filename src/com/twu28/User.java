@@ -1,20 +1,22 @@
 package com.twu28;
 
 public class User {
+    String userID;
+    String password;
+
     public String getUserID() {
         return userID;
     }
 
-    public String getNameOfTheUser() {
-        return nameOfTheUser;
+    public String getPassword() {
+        return password;
     }
 
-    String userID;
-    String nameOfTheUser;
-
-    public User(String userID, String nameOfTheUser) {
+    public User(String userID , String password){
         this.userID = userID;
-        this.nameOfTheUser = nameOfTheUser;
+        this.password = password;
     }
-
+    public String toString(){
+        return userID;
+    }
 }
