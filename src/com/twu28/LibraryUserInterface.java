@@ -20,7 +20,7 @@ public class LibraryUserInterface {
     public void interactWithUser(){
         library = new Library();
         while (true){
-                    System.out.println("Please select any one of these options\n");
+                    System.out.println("Please select any one of these\n");
                     System.out.println("[1] Books reserved by you");
                     System.out.println("[2] Reserve a book");
                     System.out.println("[3] View a movie");
